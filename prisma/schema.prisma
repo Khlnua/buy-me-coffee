@@ -1,0 +1,69 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  password String
+  username String @unique
+  profile Profile @relation(fields: [profileId], references: [id])
+  profileId Int @unique
+  bankCard BankCard?
+  receivedDonations Donation[] @relation(name: "UserReceivedDonations")
+  donationsMade Donation[] @relation(name: "Userdonar")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model BankCard {
+  id    Int     @id @default(autoincrement())
+  country String
+  firstName String
+  lastName String
+  cardNumber String
+  expiryDate DateTime
+  userId Int @unique
+  user User @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Profile {
+  id    Int     @id @default(autoincrement())
+  name String
+  about String
+  avatarImage String
+  socialMediaURL String
+  backgroundImage String
+  successMessage String? 
+  user  User?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Donation {
+  id    Int     @id @default(autoincrement())
+  amount Int
+  specialMessage String
+  socialURLorBuyMeACoffee String
+  donor   User   @relation(name: "Userdonar", fields: [donorId], references: [id])
+  donorId Int
+  receiver User @relation(name: "UserReceivedDonations", fields: [receiverId], references: [id])
+  receiverId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
