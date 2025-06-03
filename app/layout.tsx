@@ -36,7 +36,11 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <header className="flex justify-end items-center p-4 gap-4 h-16">
+          <header className="flex justify-between items-center p-4 gap-4 h-16">
+            <div className="flex gap-2 items-center justify-center">
+              <img src="/coffee.png" alt="" />
+              <p className="font-bold text-[16px]">Buy Me Coffee</p>
+            </div>
             <SignedOut>
               <SignInButton />
               <SignUpButton />

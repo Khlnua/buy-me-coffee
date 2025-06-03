@@ -1,17 +1,4 @@
 -- CreateTable
-CREATE TABLE "User" (
-    "id" SERIAL NOT NULL,
-    "email" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
-    "username" TEXT NOT NULL,
-    "profileId" INTEGER NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "BankCard" (
     "id" SERIAL NOT NULL,
     "country" TEXT NOT NULL,
@@ -20,6 +7,7 @@ CREATE TABLE "BankCard" (
     "cardNumber" TEXT NOT NULL,
     "expiryDate" TIMESTAMP(3) NOT NULL,
     "userId" INTEGER NOT NULL,
+    "user" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -35,6 +23,7 @@ CREATE TABLE "Profile" (
     "socialMediaURL" TEXT NOT NULL,
     "backgroundImage" TEXT NOT NULL,
     "successMessage" TEXT,
+    "user" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -47,7 +36,9 @@ CREATE TABLE "Donation" (
     "amount" INTEGER NOT NULL,
     "specialMessage" TEXT NOT NULL,
     "socialURLorBuyMeACoffee" TEXT NOT NULL,
+    "donor" TEXT NOT NULL,
     "donorId" INTEGER NOT NULL,
+    "receiver" TEXT NOT NULL,
     "receiverId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -56,25 +47,4 @@ CREATE TABLE "Donation" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
-
--- CreateIndex
-CREATE UNIQUE INDEX "User_profileId_key" ON "User"("profileId");
-
--- CreateIndex
 CREATE UNIQUE INDEX "BankCard_userId_key" ON "BankCard"("userId");
-
--- AddForeignKey
-ALTER TABLE "User" ADD CONSTRAINT "User_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "Profile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "BankCard" ADD CONSTRAINT "BankCard_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Donation" ADD CONSTRAINT "Donation_donorId_fkey" FOREIGN KEY ("donorId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Donation" ADD CONSTRAINT "Donation_receiverId_fkey" FOREIGN KEY ("receiverId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

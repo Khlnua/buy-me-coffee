@@ -14,19 +14,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  password String
-  username String @unique
-  profile Profile @relation(fields: [profileId], references: [id])
-  profileId Int @unique
-  bankCard BankCard?
-  receivedDonations Donation[] @relation(name: "UserReceivedDonations")
-  donationsMade Donation[] @relation(name: "Userdonar")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
 
 model BankCard {
   id    Int     @id @default(autoincrement())
@@ -36,7 +23,7 @@ model BankCard {
   cardNumber String
   expiryDate DateTime
   userId Int @unique
-  user User @relation(fields: [userId], references: [id])
+  user String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -49,7 +36,7 @@ model Profile {
   socialMediaURL String
   backgroundImage String
   successMessage String? 
-  user  User?
+  user  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -59,9 +46,9 @@ model Donation {
   amount Int
   specialMessage String
   socialURLorBuyMeACoffee String
-  donor   User   @relation(name: "Userdonar", fields: [donorId], references: [id])
+  donor  String
   donorId Int
-  receiver User @relation(name: "UserReceivedDonations", fields: [receiverId], references: [id])
+  receiver String
   receiverId Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
