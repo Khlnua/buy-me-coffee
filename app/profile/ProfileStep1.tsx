@@ -2,13 +2,14 @@
 
 import Form from "next/form";
 import { createProfile } from "../actions/create-profile";
-import { useUser } from "@clerk/nextjs";
 import { Camera } from "lucide-react";
 import { X } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useGetImage } from "@/hook/useGetImage";
+import { useActionState } from "react";
+import { ZodErrors } from "./ZodError";
 
 type ProfileStepProps = {
   currentStep: number;
@@ -16,8 +17,14 @@ type ProfileStepProps = {
   previousStep: () => void;
 };
 
+const INITIAL_STATE = {
+  data: null,
+  message: "",
+  ZodError: { avatarImage: [], name: [], about: [], socialMediaURL: [] },
+};
+
 export default function NewProfile({ nextStep }: ProfileStepProps) {
-  const { user } = useUser();
+  const [formState, formAction] = useActionState(createProfile, INITIAL_STATE);
 
   const {
     fileInputRef,
@@ -41,7 +48,8 @@ export default function NewProfile({ nextStep }: ProfileStepProps) {
     <div className="w-127 w-max-168 flex flex-col gap-6">
       <h3 className="font-semibold text-2xl">Complete your profile page</h3>
       <Form
-        action={createProfile.bind(null, String(user?.id))}
+        action={formAction}
+        // action={createProfile.bind(null, String(user?.id))}
         className="space-y-6"
       >
         <div className="flex flex-col gap-3">
@@ -93,6 +101,7 @@ export default function NewProfile({ nextStep }: ProfileStepProps) {
               </p>
             )}
           </div>
+          <ZodErrors error={formState?.ZodError?.avatarImage} />
         </div>
 
         <div className="flex flex-col gap-2">
@@ -103,6 +112,7 @@ export default function NewProfile({ nextStep }: ProfileStepProps) {
             name="name"
             placeholder="Enter your name here"
           />
+          <ZodErrors error={formState?.ZodError?.name} />
         </div>
 
         <div className="flex flex-col gap-2">
@@ -114,6 +124,7 @@ export default function NewProfile({ nextStep }: ProfileStepProps) {
             placeholder="Write about yourself here"
             className="min-h-20"
           />
+          <ZodErrors error={formState?.ZodError?.about} />
         </div>
 
         <div className="flex flex-col gap-2">
@@ -124,6 +135,7 @@ export default function NewProfile({ nextStep }: ProfileStepProps) {
             name="socialMediaURL"
             placeholder="https://"
           />
+          <ZodErrors error={formState?.ZodError?.socialMediaURL} />
         </div>
 
         <Button onClick={handleSubmit}>Continue</Button>
