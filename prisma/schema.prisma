@@ -22,10 +22,10 @@ model BankCard {
   lastName String
   cardNumber String
   expiryDate DateTime
-  userId Int @unique
-  user String
+  userId String @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  cvc String
 }
 
 model Profile {
@@ -36,7 +36,7 @@ model Profile {
   socialMediaURL String
   backgroundImage String
   successMessage String? 
-  user  String
+  userId  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

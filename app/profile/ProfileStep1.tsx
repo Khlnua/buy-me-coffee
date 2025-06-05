@@ -47,11 +47,7 @@ export default function NewProfile({ nextStep }: ProfileStepProps) {
   return (
     <div className="w-127 w-max-168 flex flex-col gap-6">
       <h3 className="font-semibold text-2xl">Complete your profile page</h3>
-      <Form
-        action={formAction}
-        // action={createProfile.bind(null, String(user?.id))}
-        className="space-y-6"
-      >
+      <Form action={formAction} className="space-y-6">
         <div className="flex flex-col gap-3">
           <Label htmlFor="avatarImage" className="text-sm font-medium">
             Add photo

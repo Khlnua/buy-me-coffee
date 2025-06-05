@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { createCard } from "../actions/create-card";
-import CompleteProfile from "./CompleteProfile";
+// import CompleteProfile from "./CompleteProfile";
 import {
   Select,
   SelectContent,
@@ -14,7 +14,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
+import { useActionState, useState } from "react";
+import { getCountries } from "@/utils/getCountries";
+import { ZodErrors } from "./ZodError";
 
 type ProfileStepProps = {
   currentStep: number;
@@ -22,8 +24,22 @@ type ProfileStepProps = {
   previousStep: () => void;
 };
 
+const INITIAL_STATE = {
+  data: null,
+  message: "",
+  ZodError: {
+    country: [],
+    firstname: [],
+    lastname: [],
+    cardNumber: [],
+    expiryDate: [],
+    cvc: [],
+  },
+};
+
 export default function NewCard({ previousStep }: ProfileStepProps) {
-  const { user } = useUser();
+  const [formState, formAction] = useActionState(createCard, INITIAL_STATE);
+
   const [value, setValue] = useState("");
 
   const handleSubmit = () => {
@@ -35,37 +51,29 @@ export default function NewCard({ previousStep }: ProfileStepProps) {
     setValue(onlyNumbers);
   };
 
+  const { countries, months, years } = getCountries();
+
   return (
     <div className="w-127 w-max-168 flex flex-col gap-6">
       <h3 className="font-semibold text-2xl">Complete your profile page</h3>
-      <Form
-        action={createCard.bind(null, String(user?.id))}
-        className="space-y-6"
-      >
+      <Form action={formAction} className="space-y-6">
         <div className="flex flex-col gap-2 w-full">
-          <Label htmlFor="country">Select country</Label>
+          <Label htmlFor="country" className="w-127">
+            Select country
+          </Label>
           <Select name="country">
             <SelectTrigger>
               <SelectValue placeholder="Select country" />
             </SelectTrigger>
-            <SelectContent className="w-127">
-              <SelectItem value="Japan">Japan</SelectItem>
-              <SelectItem value="South Korea">South Korea</SelectItem>
-              <SelectItem value="United States of America">
-                United States of America
-              </SelectItem>
-              <SelectItem value="Netherlands">Netherlands</SelectItem>
-              <SelectItem value="Sweden">Sweden</SelectItem>
-              <SelectItem value="Germany">Germany</SelectItem>
-              <SelectItem value="Ireland">Ireland</SelectItem>
-              <SelectItem value="Singapore">Singapore</SelectItem>
-              <SelectItem value="Denmark">Denmark</SelectItem>
-              <SelectItem value="Turkey">Turkey</SelectItem>
-              <SelectItem value="France">France</SelectItem>
-              <SelectItem value="Mongolia">Mongolia</SelectItem>
-              <SelectItem value="New Zealand">New Zealand</SelectItem>
+            <SelectContent>
+              {countries.map((country) => (
+                <SelectItem key={country} value={country}>
+                  {country}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
+          <ZodErrors error={formState?.ZodError?.countries} />
         </div>
 
         <div className="flex gap-10">
@@ -77,6 +85,7 @@ export default function NewCard({ previousStep }: ProfileStepProps) {
               name="firstName"
               placeholder="Enter your name here"
             />
+            <ZodErrors error={formState?.ZodError?.firstName} />
           </div>
 
           <div className="flex flex-col gap-2">
@@ -87,6 +96,7 @@ export default function NewCard({ previousStep }: ProfileStepProps) {
               name="lastName"
               placeholder="Enter your name here"
             />
+            <ZodErrors error={formState?.ZodError?.lastName} />
           </div>
         </div>
 
@@ -100,6 +110,7 @@ export default function NewCard({ previousStep }: ProfileStepProps) {
             onChange={handleChange}
             placeholder="XXXX-XXXX-XXXX-XXXX"
           />
+          <ZodErrors error={formState?.ZodError?.cardNumber} />
         </div>
 
         <div className="flex justify-between gap-2">
@@ -110,20 +121,14 @@ export default function NewCard({ previousStep }: ProfileStepProps) {
                 <SelectValue placeholder="Month" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="January">January</SelectItem>
-                <SelectItem value="February">February</SelectItem>
-                <SelectItem value="March">March</SelectItem>
-                <SelectItem value="April">April</SelectItem>
-                <SelectItem value="May">May</SelectItem>
-                <SelectItem value="June">June</SelectItem>
-                <SelectItem value="July">July</SelectItem>
-                <SelectItem value="August">August</SelectItem>
-                <SelectItem value="September">September</SelectItem>
-                <SelectItem value="October">October</SelectItem>
-                <SelectItem value="November">November</SelectItem>
-                <SelectItem value="December">December</SelectItem>
+                {months.map((month) => (
+                  <SelectItem key={month} value={month}>
+                    {month}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
+            <ZodErrors error={formState?.ZodError?.months} />
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="expiryDate">Year</Label>
@@ -132,31 +137,26 @@ export default function NewCard({ previousStep }: ProfileStepProps) {
                 <SelectValue placeholder="Year" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="2025">2025</SelectItem>
-                <SelectItem value="2026">2026</SelectItem>
-                <SelectItem value="2027">2027</SelectItem>
-                <SelectItem value="2028">2028</SelectItem>
-                <SelectItem value="2029">2029</SelectItem>
-                <SelectItem value="2030">2030</SelectItem>
-                <SelectItem value="2031">2031</SelectItem>
-                <SelectItem value="2032">2032</SelectItem>
+                {years.map((year) => (
+                  <SelectItem key={year} value={year}>
+                    {year}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
+            <ZodErrors error={formState?.ZodError?.years} />
           </div>
           <div className="flex flex-col gap-2">
-            <Label htmlFor="expiryDate">CVC</Label>
-            <Input
-              type="text"
-              id="expiryDate"
-              name="expiryDate"
-              placeholder="CVC"
-            />
+            <Label htmlFor="cvc">CVC</Label>
+            <Input type="text" id="cvc" name="cvc" placeholder="CVC" />
+            <ZodErrors error={formState?.ZodError?.cvc} />
           </div>
         </div>
 
         <div className="flex justify-end gap-2">
           <Button onClick={handleSubmit}>Back</Button>
-          <CompleteProfile />
+          <Button type="submit" />
+          {/* <CompleteProfile /> */}
         </div>
       </Form>
     </div>

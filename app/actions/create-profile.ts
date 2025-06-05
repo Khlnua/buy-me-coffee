@@ -16,6 +16,13 @@ const schemaUserProfile = z.object({
 
 export const createProfile = async (previous: unknown, formData: FormData) => {
   const user = await currentUser();
+  if (!user || !user.id) {
+    return {
+      ZodError: {},
+      message: "User not authenticated",
+    };
+  }
+  const userId = user.id;
 
   const validateFormData = schemaUserProfile.safeParse({
     avatarImage: formData.get("avatarImage"),
@@ -27,7 +34,7 @@ export const createProfile = async (previous: unknown, formData: FormData) => {
   if (!validateFormData.success) {
     return {
       ZodError: validateFormData.error.flatten().fieldErrors,
-      message: "Missing Fields, Failed to maka a profile",
+      message: "Missing Fields, Failed to maka profile",
     };
   }
 
@@ -44,7 +51,7 @@ export const createProfile = async (previous: unknown, formData: FormData) => {
       avatarImage,
       socialMediaURL,
       backgroundImage,
-      user: String(user?.id),
+      userId,
     },
   });
 
