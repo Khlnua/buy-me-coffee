@@ -8,35 +8,23 @@ import { getCountries } from "@/utils/getCountries";
 
 const { countries, months, years } = getCountries();
 
-const schemaCountry = z.object({
+const schemaUserBankCard = z.object({
   country: z.enum(countries, {
     message: "Please select a country",
   }),
-});
-
-const schemaMonth = z.object({
-  month: z.enum(months, {
-    message: "Please select a month",
-  }),
-});
-
-const schemaYears = z.object({
-  month: z.enum(years, {
-    message: "Please select a year",
-  }),
-});
-
-const schemaUserBankCard = z.object({
-  countries: schemaCountry,
   firstName: z.string().min(2, { message: "Please enter name" }),
   lastName: z.string().min(2, { message: "Please enter name" }),
   cardNumber: z.string().length(16, { message: "Wrong card number" }),
-  months: schemaMonth,
-  years: schemaYears,
+  months: z.enum(months, {
+    message: "Please select a month",
+  }),
+  years: z.enum(years, {
+    message: "Please select a year",
+  }),
   cvc: z.string().length(3, { message: "Enter cvc number" }),
 });
 
-export const createCard = async (userId: string, formData: FormData) => {
+export const createCard = async (previous: unknown, formData: FormData) => {
   const user = await currentUser();
 
   if (!user?.id) {
@@ -45,10 +33,11 @@ export const createCard = async (userId: string, formData: FormData) => {
 
   const validateFormData = schemaUserBankCard.safeParse({
     country: formData.get("country"),
-    firstName: formData.get("firstname"),
-    lastName: formData.get("lastname"),
+    firstName: formData.get("firstName"),
+    lastName: formData.get("lastName"),
     cardNumber: formData.get("cardNumber"),
-    expiryDate: formData.get("expiryDate"),
+    months: formData.get("months"),
+    years: formData.get("years"),
     cvc: formData.get("cvc"),
   });
 
@@ -63,17 +52,18 @@ export const createCard = async (userId: string, formData: FormData) => {
   const firstName = formData.get("firstName") as string;
   const lastName = formData.get("lastName") as string;
   const cardNumber = formData.get("cardNumber") as string;
-  const expiryDate = new Date(formData.get("expiryDate") as string);
+  const months = formData.get("months");
+  const years = formData.get("years");
   const cvc = (formData.get("cvc") as string) ?? "";
 
   await prisma.bankCard.create({
     data: {
-      userId,
+      userId: user.id,
       country,
       firstName,
       lastName,
       cardNumber,
-      expiryDate,
+      expiryDate: new Date(Number(years), Number(months)),
       cvc,
     },
   });

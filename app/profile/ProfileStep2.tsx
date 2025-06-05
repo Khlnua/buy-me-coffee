@@ -1,7 +1,6 @@
 "use client";
 
 import Form from "next/form";
-import { useUser } from "@clerk/nextjs";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -39,8 +38,9 @@ const INITIAL_STATE = {
 
 export default function NewCard({ previousStep }: ProfileStepProps) {
   const [formState, formAction] = useActionState(createCard, INITIAL_STATE);
-
+  console.log(formState?.ZodError);
   const [value, setValue] = useState("");
+  const [valueCvv, setValueCvv] = useState("");
 
   const handleSubmit = () => {
     previousStep();
@@ -49,6 +49,11 @@ export default function NewCard({ previousStep }: ProfileStepProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const onlyNumbers = e.target.value.replace(/[^0-9]/g, "");
     setValue(onlyNumbers);
+  };
+
+  const handleChangeCVV = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onlyNumbers = e.target.value.replace(/[^0-9]/g, "");
+    setValueCvv(onlyNumbers);
   };
 
   const { countries, months, years } = getCountries();
@@ -73,7 +78,7 @@ export default function NewCard({ previousStep }: ProfileStepProps) {
               ))}
             </SelectContent>
           </Select>
-          <ZodErrors error={formState?.ZodError?.countries} />
+          <ZodErrors error={formState?.ZodError?.country} />
         </div>
 
         <div className="flex gap-10">
@@ -116,7 +121,7 @@ export default function NewCard({ previousStep }: ProfileStepProps) {
         <div className="flex justify-between gap-2">
           <div className="flex flex-col gap-2">
             <Label htmlFor="expiryDate">Expires</Label>
-            <Select>
+            <Select name="months">
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Month" />
               </SelectTrigger>
@@ -132,7 +137,7 @@ export default function NewCard({ previousStep }: ProfileStepProps) {
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="expiryDate">Year</Label>
-            <Select>
+            <Select name="years">
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Year" />
               </SelectTrigger>
@@ -148,13 +153,21 @@ export default function NewCard({ previousStep }: ProfileStepProps) {
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="cvc">CVC</Label>
-            <Input type="text" id="cvc" name="cvc" placeholder="CVC" />
+            <Input
+              onChange={handleChangeCVV}
+              type="text"
+              id="cvc"
+              name="cvc"
+              placeholder="CVC"
+            />
             <ZodErrors error={formState?.ZodError?.cvc} />
           </div>
         </div>
 
         <div className="flex justify-end gap-2">
-          <Button onClick={handleSubmit}>Back</Button>
+          <Button type="button" onClick={handleSubmit}>
+            Back
+          </Button>
           <Button type="submit" />
           {/* <CompleteProfile /> */}
         </div>
