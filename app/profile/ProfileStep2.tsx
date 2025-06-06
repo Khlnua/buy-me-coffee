@@ -5,7 +5,6 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { createCard } from "../actions/create-card";
-// import CompleteProfile from "./CompleteProfile";
 import {
   Select,
   SelectContent,
@@ -16,6 +15,7 @@ import {
 import { useActionState, useState } from "react";
 import { getCountries } from "@/utils/getCountries";
 import { ZodErrors } from "./ZodError";
+import CompleteProfile from "./CompleteProfile";
 
 type ProfileStepProps = {
   currentStep: number;
@@ -168,8 +168,7 @@ export default function NewCard({ previousStep }: ProfileStepProps) {
           <Button type="button" onClick={handleSubmit}>
             Back
           </Button>
-          <Button type="submit" />
-          {/* <CompleteProfile /> */}
+          <CompleteProfile />
         </div>
       </Form>
     </div>

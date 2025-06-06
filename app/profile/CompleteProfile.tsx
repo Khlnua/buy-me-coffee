@@ -6,14 +6,14 @@ import { useRouter } from "next/navigation";
 
 const CompleteProfile = () => {
   const { session } = useSession();
-  const router = useRouter();
+  const { push } = useRouter();
 
   const handleCompleteProfile = async () => {
-    await fetch("/api/complete-profile", { method: "POST" });
+    await fetch("/api/complete-bankCard", { method: "POST" });
 
     await session?.reload();
 
-    router.push("/");
+    push("http://localhost:3000");
   };
 
   return <Button onClick={handleCompleteProfile}>Done</Button>;

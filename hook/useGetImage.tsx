@@ -16,21 +16,9 @@ export const useGetImage = ({
 
   const uploadToCloudinary = async (file: File) => {
     setUploading(true);
-    const formData = new FormData();
-    formData.append("upload_preset", "food-delivery");
-    formData.append("file", file);
 
     try {
-      const res = await fetch(
-        "https://api.cloudinary.com/v1_1/dhvup7uyy/image/upload",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      const data = await res.json();
-      const imageUrl = data.url;
+      const imageUrl = URL.createObjectURL(file);
 
       onUpload(imageUrl);
       setPreviewLink(imageUrl);
