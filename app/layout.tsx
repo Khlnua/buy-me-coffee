@@ -49,7 +49,7 @@ export default function RootLayout({
               <UserButton />
             </SignedIn>
           </header>
-          {children}
+          <div className="flex justify-center items-center">{children}</div>
         </body>
       </html>
     </ClerkProvider>

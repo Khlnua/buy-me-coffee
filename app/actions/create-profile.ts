@@ -58,9 +58,9 @@
 
 "use server";
 import { z } from "zod/v4";
+import { clerkClient } from "@clerk/nextjs/server";
 import { currentUser } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
-import { redirect } from "next/navigation";
 
 const schemaUserProfile = z.object({
   avatarImage: z.string().min(1, { message: "Please enter image" }),
@@ -116,5 +116,8 @@ export const createProfile = async (previous: unknown, formData: FormData) => {
     },
   });
 
-  redirect("/");
+  const client = await clerkClient();
+  await client.users.updateUserMetadata(user.id, {
+    publicMetadata: { isProfileCompleted: true },
+  });
 };

@@ -4,7 +4,7 @@ import Form from "next/form";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { createCard } from "../actions/create-card";
+import { createCard } from "@/app/actions/create-card";
 import {
   Select,
   SelectContent,
@@ -12,10 +12,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useActionState, useState } from "react";
+import { useActionState, useState, useTransition } from "react";
 import { getCountries } from "@/utils/getCountries";
-import { ZodErrors } from "./ZodError";
-import CompleteProfile from "./CompleteProfile";
+import { ZodErrors } from "@/app/ZodError";
+import { useRouter } from "next/navigation";
 
 type ProfileStepProps = {
   currentStep: number;
@@ -38,13 +38,10 @@ const INITIAL_STATE = {
 
 export default function NewCard({ previousStep }: ProfileStepProps) {
   const [formState, formAction] = useActionState(createCard, INITIAL_STATE);
-  console.log(formState?.ZodError);
+  const [, startTransition] = useTransition();
   const [value, setValue] = useState("");
   const [valueCvv, setValueCvv] = useState("");
-
-  const handleSubmit = () => {
-    previousStep();
-  };
+  const { push } = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const onlyNumbers = e.target.value.replace(/[^0-9]/g, "");
@@ -56,12 +53,19 @@ export default function NewCard({ previousStep }: ProfileStepProps) {
     setValueCvv(onlyNumbers);
   };
 
+  const handleSubmit = (formData: FormData) => {
+    startTransition(() => {
+      formAction(formData);
+    });
+    push("/");
+  };
+
   const { countries, months, years } = getCountries();
 
   return (
     <div className="w-127 w-max-168 flex flex-col gap-6">
       <h3 className="font-semibold text-2xl">Complete your profile page</h3>
-      <Form action={formAction} className="space-y-6">
+      <Form action={handleSubmit} className="space-y-6">
         <div className="flex flex-col gap-2 w-full">
           <Label htmlFor="country" className="w-127">
             Select country
@@ -165,10 +169,7 @@ export default function NewCard({ previousStep }: ProfileStepProps) {
         </div>
 
         <div className="flex justify-end gap-2">
-          <Button type="button" onClick={handleSubmit}>
-            Back
-          </Button>
-          <CompleteProfile />
+          <Button type="submit">Done</Button>
         </div>
       </Form>
     </div>
