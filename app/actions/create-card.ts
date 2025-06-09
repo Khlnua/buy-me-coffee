@@ -14,14 +14,14 @@ const schemaUserBankCard = z.object({
   }),
   firstName: z.string().min(2, { message: "Please enter name" }),
   lastName: z.string().min(2, { message: "Please enter name" }),
-  cardNumber: z.string().length(16, { message: "Wrong card number" }),
+  cardNumber: z.string().min(16).max(16, { message: "Card number must be 16 digits" }).regex(/^\d{16}$/, "Card number must be 16 digits"),
   months: z.enum(months, {
     message: "Please select a month",
   }),
   years: z.enum(years, {
     message: "Please select a year",
   }),
-  cvc: z.string().length(3, { message: "Enter cvc number" }),
+  cvc: z.string().length(3, { message: "Enter cvc number" }).regex(/^\d{3}$/, "CVV must be 3 or 4 digits"),
 });
 
 export const createCard = async (previous: unknown, formData: FormData) => {
