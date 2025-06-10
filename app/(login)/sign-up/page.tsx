@@ -1,22 +1,23 @@
-"use client"
+"use client";
 
-import { SignIn } from "@clerk/nextjs";
-import Image from "next/legacy/image";
-import { Button } from "@/components/ui/button";
 import { Coffee } from "lucide-react";
+import Image from "next/legacy/image";
+import { SignUp } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-
+import { Button } from "@/components/ui/button";
 
 const SignUpPage = () => {
-
-    const { push } = useRouter();
+  const { push } = useRouter();
   return (
-<div className="flex w-full">
-      <div className="w-1/2 bg-[#FBBF24]">
+    <div className="flex w-full">
+      <div className="w-1/2 bg-[#FBBF24] h-screen">
         <div className="pl-10 pt-5">
-        <Button className="flex gap-2 font-bold bg-[#FBBF24] border-none hover:bg-[#FBBF24] text-black" onClick={() => push("/")}>
-           <Coffee /> Buy Me Coffee
-        </Button>
+          <Button
+            className="flex gap-2 font-bold bg-[#FBBF24] border-none hover:bg-[#FBBF24] text-black"
+            onClick={() => push("/")}
+          >
+            <Coffee /> Buy Me Coffee
+          </Button>
         </div>
         <div className="flex flex-col items-center justify-center gap-5 h-full p-10 pb-20">
           <Image
@@ -35,23 +36,21 @@ const SignUpPage = () => {
           </h1>
         </div>
       </div>
-      <div className="w-1/2">
+      <div className="w-1/2 h-screen">
         <div className="flex justify-end pr-10 pt-5">
           <Button
             variant="ghost"
-            onClick={() => (window.location.href = "/sign-up")}>
-            Sign Up
+            onClick={() => (window.location.href = "/sign-in")}
+          >
+            Sign In
           </Button>
         </div>
         <div className="flex items-center justify-center pb-20">
-          <SignIn routing="hash" />
+          <SignUp routing="hash" />
         </div>
       </div>
     </div>
-  ); 
-}
+  );
+};
 
-export default SignUpPage
-
-
-
+export default SignUpPage;

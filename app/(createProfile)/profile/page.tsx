@@ -6,8 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useGetImage } from "@/hook/useGetImage";
-import { uploadToCloudinary } from "../../utils/get-image-url";
-import { createProfile } from "../actions/create-profile";
+import { uploadToCloudinary } from "@/utils/get-image-url";
+import { createProfile } from "@/app/actions";
 import { ZodErrors } from "../ZodError";
 import { useRouter } from "next/navigation";
 
@@ -156,8 +156,6 @@ export default function NewProfile({ nextStep }: ProfileStepProps) {
           )}
           {uploading ? "Uploading..." : isPending ? "Loading..." : "Continue"}
         </Button>
-
-        
       </form>
     </div>
   );

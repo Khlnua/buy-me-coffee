@@ -4,7 +4,7 @@ import Form from "next/form";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { createCard } from "@/app/actions/create-card";
+import { createCard } from "@/app/actions";
 import {
   Select,
   SelectContent,
@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { useActionState, useState, useTransition } from "react";
 import { getCountries } from "@/utils/getCountries";
-import { ZodErrors } from "@/app/ZodError";
+import { ZodErrors } from "@/app/(createProfile)/ZodError";
 import { useRouter } from "next/navigation";
 
 type ProfileStepProps = {

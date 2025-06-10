@@ -1,10 +1,9 @@
 "use server";
 
-import prisma from "@/lib/prisma";
-import { redirect } from "next/navigation";
 import { z } from "zod/v4";
-import { clerkClient, currentUser } from "@clerk/nextjs/server";
+import prisma from "@/lib/prisma";
 import { getCountries } from "@/utils/getCountries";
+import { clerkClient, currentUser } from "@clerk/nextjs/server";
 
 const { countries, months, years } = getCountries();
 
@@ -14,14 +13,21 @@ const schemaUserBankCard = z.object({
   }),
   firstName: z.string().min(2, { message: "Please enter name" }),
   lastName: z.string().min(2, { message: "Please enter name" }),
-  cardNumber: z.string().min(16).max(16, { message: "Card number must be 16 digits" }).regex(/^\d{16}$/, "Card number must be 16 digits"),
+  cardNumber: z
+    .string()
+    .min(16)
+    .max(16, { message: "Card number must be 16 digits" })
+    .regex(/^\d{16}$/, "Card number must be 16 digits"),
   months: z.enum(months, {
     message: "Please select a month",
   }),
   years: z.enum(years, {
     message: "Please select a year",
   }),
-  cvc: z.string().length(3, { message: "Enter cvc number" }).regex(/^\d{3}$/, "CVV must be 3 or 4 digits"),
+  cvc: z
+    .string()
+    .length(3, { message: "Enter cvc number" })
+    .regex(/^\d{3}$/, "CVV must be 3 or 4 digits"),
 });
 
 export const createCard = async (previous: unknown, formData: FormData) => {
