@@ -1,19 +1,15 @@
 "use client";
-import { LoadingCoffeeGif } from "@/components/LoadingCoffeeGif";
-import { SideBar } from "@/components/SideBar";
-import { Button } from "@/components/ui/button";
+
 import { useUser } from "@clerk/nextjs";
-import { SquareArrowOutUpRight } from "lucide-react";
+import { SideBar } from "@/components/SideBar";
+// import ProfileAvatar from "@/components/ProfileAvatar";
+import { LoadingCoffeeGif } from "@/components/LoadingCoffeeGif";
 
 const Homepage = () => {
-  const { isSignedIn, user, isLoaded } = useUser();
+  const { isSignedIn, isLoaded } = useUser();
 
   if (!isLoaded) {
-    return (
-      <div>
-        <LoadingCoffeeGif />
-      </div>
-    );
+    return <LoadingCoffeeGif />;
   }
 
   if (!isSignedIn) {
@@ -23,6 +19,7 @@ const Homepage = () => {
   return (
     <div className="flex items-start justify-start w-full min-h-screen px-20">
       <SideBar />
+      <div>{/* <ProfileAvatar /> */}</div>
     </div>
   );
 };
